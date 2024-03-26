@@ -7,7 +7,7 @@ class AuthUseCase {
 
   final AuthRepository _authRepository;
 
-  Future<bool> isAuthenticated() => _authRepository.isAuthenticated();
+  bool isAuthenticated() => _authRepository.isAuthenticated();
 
-  Future<void> logout() => _authRepository.logout();
+  void logout() => _authRepository.logout();
 }

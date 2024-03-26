@@ -1,5 +1,5 @@
 abstract class AuthRepository {
-  Future<bool> isAuthenticated();
+  bool isAuthenticated();
 
-  Future<void> logout();
+  void logout();
 }

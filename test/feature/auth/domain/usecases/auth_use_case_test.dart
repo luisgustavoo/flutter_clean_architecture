@@ -14,14 +14,12 @@ void main() {
     authUseCase = AuthUseCase(authRepository: mockAuthRepository);
   });
 
-  test('should check if user is authenticated', () async {
+  test('should check if user is authenticated', () {
     when(
       () => mockAuthRepository.isAuthenticated(),
-    ).thenAnswer((_) async => true);
+    ).thenReturn(true);
 
-    final result = await authUseCase.isAuthenticated();
-
-    expect(result, true);
+    expect(authUseCase.isAuthenticated(), true);
 
     verify(
       () => mockAuthRepository.isAuthenticated(),
@@ -30,12 +28,12 @@ void main() {
     verifyNoMoreInteractions(mockAuthRepository);
   });
 
-  test('should check whether the user has successfully logged out', () async {
+  test('should check whether the user has successfully logged out', () {
     when(
       () => mockAuthRepository.logout(),
     ).thenAnswer((_) async => _);
 
-    await authUseCase.logout();
+    authUseCase.logout();
 
     verify(
       () => mockAuthRepository.logout(),

@@ -20,39 +20,39 @@ void main() {
   });
 
   group('isAuthenticated', () {
-    test('Should check user is authenticated', () async {
+    test('Should check user is authenticated', () {
       when(
         () => mockSharedPreferences.getString('access_token'),
       ).thenReturn(
         FixtureReader.getJsonData('access_token.json'),
       );
 
-      final result = await localDataSource.isAuthenticated();
-      expect(result, true);
+      expect(localDataSource.isAuthenticated(), true);
       verify(
         () => mockSharedPreferences.getString(Constants.kAccessToken),
       ).called(1);
     });
 
-    test('Should check user is unauthenticated', () async {
+    test('Should check user is unauthenticated', () {
       when(
         () => mockSharedPreferences.getString(Constants.kAccessToken),
       ).thenReturn(null);
 
-      final result = await localDataSource.isAuthenticated();
-      expect(result, false);
+      expect(localDataSource.isAuthenticated(), false);
       verify(
         () => mockSharedPreferences.getString(Constants.kAccessToken),
       ).called(1);
     });
 
-    test('Should throw an exception CacheException', () async {
+    test('Should throw an exception CacheException', () {
       when(
         () => mockSharedPreferences.getString(Constants.kAccessToken),
       ).thenThrow(Exception());
 
-      final call = localDataSource.isAuthenticated;
-      expect(call(), throwsA(isA<CacheException>()));
+      expect(
+        () => localDataSource.isAuthenticated(),
+        throwsA(isA<CacheException>()),
+      );
       verify(
         () => mockSharedPreferences.getString(Constants.kAccessToken),
       ).called(1);
