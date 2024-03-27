@@ -11,23 +11,26 @@ void main() {
     name: 'John Doe',
     email: 'johndoe@domain.com',
   );
+
   test('Should be a subclass of User', () async {
     expect(userModel, isA<UserModel>());
   });
-  group('fromJson toJson', () {
-    test('should return a valid model ', () async {
-      final jsonMap = jsonDecode(FixtureReader.getJsonData('user.json'))
-          as Map<String, dynamic>;
 
+  group('fromJson toJson', () {
+    late Map<String, dynamic> jsonMap;
+
+    setUp(() {
+      jsonMap = jsonDecode(FixtureReader.getJsonData('user.json'))
+          as Map<String, dynamic>;
+    });
+
+    test('should return a valid model ', () async {
       final result = UserModel.fromMap(jsonMap);
 
       expect(result, userModel);
     });
 
     test('should return a valid Json', () async {
-      final jsonMap = jsonDecode(FixtureReader.getJsonData('user.json'))
-          as Map<String, dynamic>;
-
       final result = userModel.toMap();
 
       expect(result, jsonMap);

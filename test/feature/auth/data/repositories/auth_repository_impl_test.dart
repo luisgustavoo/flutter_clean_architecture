@@ -18,29 +18,41 @@ void main() {
     );
   });
 
+  void mockReturnLocalDataSource({
+    bool? mockReturn,
+    bool isException = false,
+  }) {
+    switch (isException) {
+      case true:
+        when(
+          () => mockAuthLocalDataSource.isAuthenticated(),
+        ).thenThrow(
+          CacheException(),
+        );
+      default:
+        when(
+          () => mockAuthLocalDataSource.isAuthenticated(),
+        ).thenReturn(
+          mockReturn ?? false,
+        );
+    }
+  }
+
   group('isAuthenticated', () {
-    test('should check if user is authenticated', () {
-      when(
-        () => mockAuthLocalDataSource.isAuthenticated(),
-      ).thenReturn(true);
+    test('Should check if user is authenticated', () {
+      mockReturnLocalDataSource(mockReturn: true);
 
       expect(repository.isAuthenticated(), true);
     });
 
-    test('should check if user is unauthenticated', () {
-      when(
-        () => mockAuthLocalDataSource.isAuthenticated(),
-      ).thenReturn(false);
+    test('Should check if user is unauthenticated', () {
+      mockReturnLocalDataSource(mockReturn: false);
 
       expect(repository.isAuthenticated(), false);
     });
 
-    test('should throw an exception CacheFailure', () {
-      when(
-        () => mockAuthLocalDataSource.isAuthenticated(),
-      ).thenThrow(
-        CacheException(),
-      );
+    test('Should throw an exception CacheFailure', () {
+      mockReturnLocalDataSource(isException: true);
 
       // expect(call(), throwsA(const TypeMatcher<NoLocalDataFailure>()));
       expect(() => repository.isAuthenticated(), throwsA(isA<CacheFailure>()));

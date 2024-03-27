@@ -19,43 +19,55 @@ void main() {
         AuthLocalDataSourceImpl(sharedPreferences: mockSharedPreferences);
   });
 
+  void verifySharedPreferencesCalled() {
+    verify(
+      () => mockSharedPreferences.getString(Constants.kAccessToken),
+    ).called(1);
+  }
+
+  void mockReturnSharedPreferences({
+    String? mockReturn,
+    bool isException = false,
+  }) {
+    switch (isException) {
+      case true:
+        when(
+          () => mockSharedPreferences.getString(Constants.kAccessToken),
+        ).thenThrow(Exception());
+      default:
+        when(
+          () => mockSharedPreferences.getString('access_token'),
+        ).thenReturn(
+          mockReturn,
+        );
+    }
+  }
+
   group('isAuthenticated', () {
     test('Should check user is authenticated', () {
-      when(
-        () => mockSharedPreferences.getString('access_token'),
-      ).thenReturn(
-        FixtureReader.getJsonData('access_token.json'),
+      mockReturnSharedPreferences(
+        mockReturn: FixtureReader.getJsonData('access_token.json'),
       );
 
       expect(localDataSource.isAuthenticated(), true);
-      verify(
-        () => mockSharedPreferences.getString(Constants.kAccessToken),
-      ).called(1);
+      verifySharedPreferencesCalled();
     });
 
     test('Should check user is unauthenticated', () {
-      when(
-        () => mockSharedPreferences.getString(Constants.kAccessToken),
-      ).thenReturn(null);
+      mockReturnSharedPreferences();
 
       expect(localDataSource.isAuthenticated(), false);
-      verify(
-        () => mockSharedPreferences.getString(Constants.kAccessToken),
-      ).called(1);
+      verifySharedPreferencesCalled();
     });
 
     test('Should throw an exception CacheException', () {
-      when(
-        () => mockSharedPreferences.getString(Constants.kAccessToken),
-      ).thenThrow(Exception());
+      mockReturnSharedPreferences(isException: true);
 
       expect(
         () => localDataSource.isAuthenticated(),
         throwsA(isA<CacheException>()),
       );
-      verify(
-        () => mockSharedPreferences.getString(Constants.kAccessToken),
-      ).called(1);
+      verifySharedPreferencesCalled();
     });
   });
 }
